@@ -1,4 +1,4 @@
-<!--Laravelが用意した初期設定画面をコメントアウトする
+{{--　Laravelが用意した初期設定画面をコメントアウトする　（Laravel bladeのコメントはこの形を使う。）
 
 <!doctype html>
 <html lang="{{ app()->getLocale() }}">
@@ -95,18 +95,19 @@
         </div>
     </body>
 </html>
-
--->
+Laravelが用意した初期設定画面をコメントアウトする（終わり）--}}
 
 @extends('layouts.app')
 
 @section('content')
-    <div class="center jumbotron">
-        <div class="text-center">
-            <h1>Welcome to the Microposts</h1>
-            <br>
-            <br>
-            {!! link_to_route('signup.get', 'Sign up now!', [], ['class' => 'btn btn-lg btn-primary']) !!}
+    @if (Auth::check())
+        {{ Auth::user()->name }}
+    @else
+        <div class="center jumbotron">
+            <div class="text-center">
+                <h1>Welcome to the Microposts</h1>
+                {!! link_to_route('signup.get', 'Sign up now!', [], ['class' => 'btn btn-lg btn-primary']) !!}
+            </div>
         </div>
-    </div>
+    @endif
 @endsection
