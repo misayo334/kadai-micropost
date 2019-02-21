@@ -12,9 +12,7 @@
 */
 
 //初期画面
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'MicropostsController@index');    // 上書き
 
 // ユーザ登録
 Route::get('signup', 'Auth\RegisterController@showRegistrationForm')->name('signup.get');
@@ -26,6 +24,7 @@ Route::post('login', 'Auth\LoginController@login')->name('login.post');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout.get');
 
 // ユーザ機能 (Route::group() でルーティングのGrpを作り、その際に ['middleware' => ['auth']] を加えることで、このGrpに書かれたルーティングは必ずログイン認証を確認させる事になる。)
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => 'auth'], function () {
     Route::resource('users', 'UsersController', ['only' => ['index', 'show']]);
+    Route::resource('microposts', 'MicropostsController', ['only' => ['store', 'destroy']]);
 });
