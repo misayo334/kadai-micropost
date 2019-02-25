@@ -94,6 +94,14 @@ class User extends Authenticatable
         }
     }
     
+    /**タイムライン用*/
+    public function feed_microposts()
+    {
+        $follow_user_ids = $this->followings()->pluck('users.id')->toArray();
+        $follow_user_ids[] = $this->id;
+        return Micropost::whereIn('user_id', $follow_user_ids);
+    }
+    
     
     
 
