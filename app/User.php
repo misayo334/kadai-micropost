@@ -102,6 +102,55 @@ class User extends Authenticatable
         return Micropost::whereIn('user_id', $follow_user_ids);
     }
     
+    /** favorites機能用に多対多の設定をする
+    belongsToMany() では、第一引数:Model クラス (User::class)、第二引数:中間テーブル (user_follow)、第三引数:中間テーブルの自分の id を示すカラム名 (user_id) 、第四引数:中間テーブルの関係先の id を示すカラム名 (micropost_id) 
+    */
+    
+    public function favorites()   /**User が favoriteに指定したmicropost達*/
+    {
+        return $this->belongsToMany(Micropost::class, 'favorites', 'user_id', 'micropost_id')->withTimestamps();
+    }
+    
+    /**$micropost->favor($micropost_id) や、$micropost->unfavor($micropost_id) とすれば、favorite/unfavorite指定できるように favor() とunfavor() メソッドを User モデルで定義しておく
+     */
+    
+    public function is_favorite($micropostId)
+    {
+        return $this->favorites()->where('micropost_id', $micropostId)->exists();
+    }
+    
+    public function favor($micropostId) 
+    {
+        // 既にFavorしているかの確認
+        $exist = $this->is_favorite($micropostId);
+    
+        if ($exist) { 
+            // 既にFavorしていれば何もしない
+            return false;
+        } 
+        else {
+            // 未FavorであればFavorする
+            $this->favorites()->attach($micropostId);  /**多対多を定義した中間テーブル（この場合favorites）へのレコード挿入はattachメソッドを使う*/
+            return true;
+        }
+    }
+    
+    public function unfavor($micropostId)
+    {
+        // 既にFavorしているかの確認
+        $exist = $this->is_favorite($micropostId);
+    
+        if ($exist) {  
+            // 既にFavorしていればFavorでなくす
+            $this->favorites()->detach($micropostId);  /**多対多を定義した中間テーブル（この場合favorites）からのレコード削除はdetachメソッドを使う*/
+            return true;
+        } 
+        else {
+            // 未favorであれば何もしない
+            return false;
+        }
+    }
+    
     
     
 

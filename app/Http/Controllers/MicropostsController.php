@@ -14,7 +14,7 @@ class MicropostsController extends Controller
     
             // $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
             //タイムライン表示するために変更
-            $microposts = $user->feed_microposts()->orderBy('created_at', 'desc')->paginate(5);
+            $microposts = $user->feed_microposts()->orderBy('created_at', 'desc')->paginate(3);
             
             $data = [
                 'user' => $user,
